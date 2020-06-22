@@ -15,22 +15,21 @@ jacamo-web message exchanging interface.
 
 +!supplyItem[source(S)] <-
     .print(S, " ordered item...");
-    .wait(2000);
     .abolish(paid);
     .send(buyer,achieve,makePayment);
     .
-
-+!deliverItem : true <-
-    .print("The collector will check payment.");
-    .
-
+    
 +paid[source(S)] <-
-    .wait(1000);
     .print(S, " has paid the invoice.");
     .send(collector,tell,paid);
     .abolish(paid);
-    .
+.
+    
++!deliverItem : true <-
+    .print("The collector will check payment.");
+.
 
+{ include("orgmember.asl") }
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }
 { include("$moiseJar/asl/org-obedient.asl") }

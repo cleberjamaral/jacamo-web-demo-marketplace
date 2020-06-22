@@ -9,17 +9,19 @@ jacamo-web message exchanging interface.
 @author Cleber Jorge Amaral
 */
 
-!start.
++!adopt_role(R,G,O) <-
+    joinWorkspace(O,Ofa);
+    organisation::focusWhenAvailable(G);
+    organisation::adoptRole(R);
+.
 
-+!start <- .print("Hi").
++!acceptScheme(S,M) <-
+    organisation::lookupArtifact(S, ScArtId);
+    organisation::commitMission(M)[artifact_id(ScArtId)];
+.
 
-+!makePayment[source(S)] <-
-    .print("Item payed");
-    .send(seller,tell,paid);
-    .
-
-{ include("orgmember.asl") }
-{ include("$jacamoJar/templates/common-cartago.asl") }
-{ include("$jacamoJar/templates/common-moise.asl") }
-// uncomment the include below to have an agent compliant with its organisation
-//{ include("$moiseJar/asl/org-obedient.asl") }
++!focusIn(W,A) <-
+    environment::joinWorkspace(W,Ofa);
+    environment::lookupArtifact(A,Aid)[wid(Ofa)];
+    environment::focus(Aid);
+.

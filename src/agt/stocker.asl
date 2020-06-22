@@ -15,16 +15,15 @@ jacamo-web message exchanging interface.
 
 +!needingItem <-
     .print("Asking to buy item...");
-    .wait(1000);
     .send(buyer,achieve,buyItem);
     .
 
 +!storeItem : true <-
-    .wait(1000);
     .print("Incrementing input stock...");
     inc;
     .
 
+{ include("orgmember.asl") }
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }
 // uncomment the include below to have an agent compliant with its organisation

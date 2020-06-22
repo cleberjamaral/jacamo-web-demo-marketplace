@@ -40,6 +40,7 @@
                     <goal id="deliverItem" />
                 </plan>
             </goal>
+ 
             <mission id="mbuy" min="1" max="1">
                 <goal id="buyItem" />
                 <goal id="makePayment" />
@@ -48,9 +49,9 @@
                 <goal id="supplyItem" />
                 <goal id="deliverItem" />
             </mission>
+
         </scheme>
     </functional-specification>
-
     <normative-specification>
         <properties>
             <property id="default_management" value="ignore" />
