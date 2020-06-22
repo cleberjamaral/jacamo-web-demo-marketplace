@@ -5,10 +5,13 @@
    June 21, 2020 - 03:07:00
 */
 
-defaultTasks 'run'
+plugins {
+  id "java-library"
+  id "eclipse"
+  id "com.github.johnrengelman.shadow" version "5.2.0"
+}
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
+defaultTasks 'run'
 
 version '1.0'
 group   'org.jacamo'
@@ -20,14 +23,8 @@ repositories {
     maven { url "http://jacamo.sourceforge.net/maven2" }
     maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
     maven { url "https://repo.gradle.org/gradle/libs-releases-local" }
-
-    //maven { url "https://jade.tilab.com/maven/" }
-
-    flatDir {
-       dirs 'lib'
-    }
-
-    mavenCentral()    
+    mavenCentral()
+    flatDir { dirs 'lib' }
 }
 
 dependencies {
@@ -56,38 +53,8 @@ task run (type: JavaExec, dependsOn: 'classes') {
         mkdir 'log'
     }
     main 'jacamo.infra.JaCaMoLauncher'
-    args 'jacamo_web_demo.jcm'
+    args 'marketplace.jcm'
     classpath sourceSets.main.runtimeClasspath
-}
-
-
-task uberJar(type: Jar, dependsOn: 'classes') {
-    group      ' JaCaMo'
-    description 'creates a single runnable jar file with all dependencies'
-
-    manifest {
-        attributes 'Main-Class': 'jacamo.infra.JaCaMoLauncher'
-    }
-    baseName = 'jacamo-jacamo_web_demo' // the name must start with jacamo so that jacamo...jar is found in the classpath
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    from (project.projectDir.absolutePath) {
-        include '**/*.asl'
-        include '**/*.xml'
-        include '**/*.jcm'
-        include '*.properties'
-    }
-    from (project.buildDir.absolutePath + '/jcm') {
-        include '**/*'
-    }
-    with jar
-
-    doFirst {
-        copy {
-            from 'jacamo_web_demo.jcm'
-            rename 'jacamo_web_demo.jcm','default.jcm'
-            into project.buildDir.absolutePath + '/jcm'
-        }
-    }
 }
 
 clean {
@@ -95,3 +62,39 @@ clean {
     delete 'build'
     delete 'log'
 }
+
+/*
+ *
+ * Heroku support
+ *
+ */
+
+task copyToLib(type: Copy) {
+    into "$buildDir/libs"
+    from(configurations.compile)
+}
+
+task stage(dependsOn: ['shadowJar', 'copyToLib', 'clean']) {
+	copyToLib.mustRunAfter clean
+	jar.mustRunAfter copyToLib
+}
+
+stage.dependsOn(copyToLib)
+
+jar {
+    baseName 'jacamo-web-demo'
+    manifest {
+      attributes(
+        'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+        'Main-Class': 'jacamo.infra.JaCaMoLauncher',
+        'args': 'marketplace.jcm'
+      )
+    }
+}
+
+
+/*
+ *
+ * end of file
+ *
+ */
