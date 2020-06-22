@@ -38,13 +38,11 @@
                     <goal id="supplyItem" />
                     <goal id="makePayment" />
                     <goal id="deliverItem" />
-                    <goal id="storeItem" />
                 </plan>
             </goal>
             <mission id="mbuy" min="1" max="1">
                 <goal id="buyItem" />
                 <goal id="makePayment" />
-                <goal id="storeItem" />
             </mission>
             <mission id="msupply" min="1" max="1">
                 <goal id="supplyItem" />

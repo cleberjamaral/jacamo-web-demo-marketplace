@@ -4,7 +4,6 @@
 
 +!start <- .print("Hi").
 
-
 +!makePayment[source(S)] <-
     .print("Item payed");
     .wait(1000);
